@@ -25,8 +25,8 @@ APlayerPawn::APlayerPawn()
 	Camera->bUsePawnControlRotation = false;
 }
 
-void APlayerPawn::Move(const FVector2D MoveDirection)
+void APlayerPawn::Move(const FVector2D MoveDirection, float SpeedModifier /*= 1.f*/)
 {
-	const FVector DeltaLocation = FVector(MoveDirection.X, MoveDirection.Y, 0.f) * MovementSpeedModifier * UGameplayStatics::GetWorldDeltaSeconds(this);
+	const FVector DeltaLocation = FVector(MoveDirection.X, MoveDirection.Y, 0.f) * MovementSpeedModifier * UGameplayStatics::GetWorldDeltaSeconds(this) * SpeedModifier;
 	AddActorWorldOffset(DeltaLocation, true);
 }

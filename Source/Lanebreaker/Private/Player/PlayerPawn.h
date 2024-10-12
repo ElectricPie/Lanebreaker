@@ -18,7 +18,7 @@ public:
 	// Sets default values for this pawn's properties
 	APlayerPawn();
 
-	void Move(const FVector2D MoveDirection);
+	void Move(const FVector2D MoveDirection, float SpeedModifier = 1.f);
 
 private:
 	UPROPERTY(VisibleAnywhere, Category="Components")

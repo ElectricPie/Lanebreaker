@@ -24,6 +24,10 @@ void ATopDownPlayerController::SetupInputComponent()
 	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ATopDownPlayerController::Move);
+
+		EnhancedInputComponent->BindAction(ModifierOneAction, ETriggerEvent::Started, this, &ATopDownPlayerController::SetModifierOneActive, true);
+		EnhancedInputComponent->BindAction(ModifierOneAction, ETriggerEvent::Canceled, this, &ATopDownPlayerController::SetModifierOneActive, false);
+		EnhancedInputComponent->BindAction(ModifierOneAction, ETriggerEvent::Completed, this, &ATopDownPlayerController::SetModifierOneActive, false);
 	}
 }
 
@@ -40,6 +44,12 @@ void ATopDownPlayerController::Move(const FInputActionValue& Value)
 
 	if (PlayerPawn)
 	{
-		PlayerPawn->Move(MoveDirection);
+		float MoveSpeed = 1.f;
+		if (ModifierOneActive)
+		{
+			MoveSpeed = IncreasedMoveSpeedModifier;
+		}
+		
+		PlayerPawn->Move(MoveDirection, MoveSpeed);
 	}
 }

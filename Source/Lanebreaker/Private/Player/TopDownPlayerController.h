@@ -27,12 +27,20 @@ protected:
 
 private:
 	void Move(const FInputActionValue& Value);
+	void SetModifierOneActive(bool bNewIsActive) { ModifierOneActive = bNewIsActive; }
 	
 private:
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputMappingContext> MappingContext;
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputAction> MoveAction;
+	UPROPERTY(EditAnywhere, Category="Input")
+	TObjectPtr<UInputAction> ModifierOneAction;
+	UPROPERTY(EditAnywhere, Category="Movement")
+	float IncreasedMoveSpeedModifier = 2.f;
 
 	TObjectPtr<APlayerPawn> PlayerPawn;
+
+	bool ModifierOneActive;
 };
+
