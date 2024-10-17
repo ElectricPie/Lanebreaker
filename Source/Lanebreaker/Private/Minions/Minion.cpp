@@ -31,11 +31,12 @@ AMinion::AMinion()
 	}
 #endif // WITH_EDITORONLY_DATA
 
-	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh Component"));
+	MeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh Component"));
 	if (MeshComponent)
 	{
 		MeshComponent->AlwaysLoadOnClient = true;
 		MeshComponent->AlwaysLoadOnServer = true;
+		MeshComponent->SetupAttachment(CapsuleComponent);
 	}
 }
 

@@ -9,7 +9,7 @@
 
 class UArrowComponent;
 class UCapsuleComponent;
-class UStaticMeshComponent;
+class USkeletalMeshComponent;
 
 UCLASS()
 class AMinion : public APawn
@@ -26,10 +26,9 @@ private:
 
 #if WITH_EDITORONLY_DATA
 	/** Component shown in the editor only to indicate character facing */
-	UPROPERTY()
 	TObjectPtr<UArrowComponent> ArrowComponent;
 #endif
 	
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UStaticMeshComponent> MeshComponent;
+	TObjectPtr<USkeletalMeshComponent> MeshComponent;
 };
