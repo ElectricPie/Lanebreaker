@@ -21,9 +21,9 @@ public:
 	void Move(const FVector2D MoveDirection, float SpeedModifier = 1.f);
 
 private:
-	UPROPERTY(VisibleAnywhere, Category="Components")
+	UPROPERTY(VisibleAnywhere, Category="Player Pawn")
 	TObjectPtr<USpringArmComponent> CameraArm;
-	UPROPERTY(VisibleAnywhere, Category="Components")
+	UPROPERTY(VisibleAnywhere, Category="Player Pawn")
 	TObjectPtr<UCameraComponent> Camera;
 
 	UPROPERTY(EditAnywhere, Category="Movement")
