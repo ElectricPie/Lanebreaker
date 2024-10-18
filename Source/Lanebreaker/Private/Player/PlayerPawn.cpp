@@ -25,6 +25,9 @@ APlayerPawn::APlayerPawn()
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	Camera->SetupAttachment(CameraArm);
 	Camera->bUsePawnControlRotation = false;
+
+	bReplicates = true;
+	bOnlyRelevantToOwner = true;
 }
 
 void APlayerPawn::Move(const FVector2D MoveDirection, float SpeedModifier /*= 1.f*/)

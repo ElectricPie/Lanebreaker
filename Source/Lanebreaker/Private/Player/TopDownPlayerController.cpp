@@ -11,6 +11,9 @@ void ATopDownPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (!IsLocalPlayerController())
+		return;
+	
 	if (UEnhancedInputLocalPlayerSubsystem* InputSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		InputSubsystem->AddMappingContext(MappingContext, 0);
@@ -31,18 +34,11 @@ void ATopDownPlayerController::SetupInputComponent()
 	}
 }
 
-void ATopDownPlayerController::OnPossess(APawn* InPawn)
-{
-	Super::OnPossess(InPawn);
-
-	PlayerPawn = Cast<APlayerPawn>(InPawn);
-}
-
 void ATopDownPlayerController::Move(const FInputActionValue& Value)
 {
 	const FVector2D MoveDirection = Value.Get<FVector2D>().GetSafeNormal();
 
-	if (PlayerPawn)
+	if (APlayerPawn* TempPawn = Cast<APlayerPawn>(GetPawn()))
 	{
 		float MoveSpeed = 1.f;
 		if (ModifierOneActive)
@@ -50,6 +46,6 @@ void ATopDownPlayerController::Move(const FInputActionValue& Value)
 			MoveSpeed = IncreasedMoveSpeedModifier;
 		}
 		
-		PlayerPawn->Move(MoveDirection, MoveSpeed);
+		TempPawn->Move(MoveDirection, MoveSpeed);
 	}
 }

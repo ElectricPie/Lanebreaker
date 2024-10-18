@@ -23,12 +23,11 @@ class ATopDownPlayerController : public APlayerController
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
-	virtual void OnPossess(APawn* InPawn) override;
 
 private:
 	void Move(const FInputActionValue& Value);
 	void SetModifierOneActive(bool bNewIsActive) { ModifierOneActive = bNewIsActive; }
-	
+
 private:
 	UPROPERTY(EditAnywhere, Category="Input")
 	TObjectPtr<UInputMappingContext> MappingContext;
@@ -38,8 +37,6 @@ private:
 	TObjectPtr<UInputAction> ModifierOneAction;
 	UPROPERTY(EditAnywhere, Category="Movement")
 	float IncreasedMoveSpeedModifier = 2.f;
-
-	TObjectPtr<APlayerPawn> PlayerPawn;
 
 	bool ModifierOneActive;
 };
