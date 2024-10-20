@@ -7,6 +7,7 @@
 #include "Minion.generated.h"
 
 
+class UFloatingPawnMovement;
 class UArrowComponent;
 class UCapsuleComponent;
 class USkeletalMeshComponent;
@@ -23,12 +24,12 @@ public:
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCapsuleComponent> CapsuleComponent;
-
 #if WITH_EDITORONLY_DATA
 	/** Component shown in the editor only to indicate character facing */
 	TObjectPtr<UArrowComponent> ArrowComponent;
 #endif
-	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USkeletalMeshComponent> MeshComponent;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UFloatingPawnMovement> FloatingPawnMovementComponent;
 };

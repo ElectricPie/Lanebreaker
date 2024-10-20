@@ -7,6 +7,7 @@
 #include "Components/ArrowComponent.h"
 #endif // WITH_EDITORONLY_DATA
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/FloatingPawnMovement.h"
 
 // Sets default values
 AMinion::AMinion()
@@ -38,5 +39,10 @@ AMinion::AMinion()
 		MeshComponent->AlwaysLoadOnServer = true;
 		MeshComponent->SetupAttachment(CapsuleComponent);
 	}
+
+	FloatingPawnMovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
+	FloatingPawnMovementComponent->MaxSpeed = 400.f;
+	
+	bCanAffectNavigationGeneration = false;
 }
 
