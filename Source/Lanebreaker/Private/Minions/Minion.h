@@ -20,7 +20,11 @@ class AMinion : public APawn
 public:
 	// Sets default values for this pawn's properties
 	AMinion();
+	virtual void Tick(float DeltaSeconds) override;
 
+private:
+	void RotateToMovement();
+	
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCapsuleComponent> CapsuleComponent;

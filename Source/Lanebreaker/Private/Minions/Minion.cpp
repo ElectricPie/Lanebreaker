@@ -46,3 +46,25 @@ AMinion::AMinion()
 	bCanAffectNavigationGeneration = false;
 }
 
+void AMinion::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	RotateToMovement();
+}
+
+void AMinion::RotateToMovement()
+{
+	if (!FloatingPawnMovementComponent)
+		return;
+
+	const FVector Velocity = FloatingPawnMovementComponent->Velocity;
+	if (Velocity.IsNearlyZero())
+		return;
+
+	const FRotator CurrentRotation = GetActorRotation();
+	const FRotator TargetRotation = Velocity.Rotation();
+	const FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), 5.f);
+	SetActorRotation(NewRotation);
+}
+
