@@ -43,7 +43,7 @@ AMinion::AMinion()
 	FloatingPawnMovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 	FloatingPawnMovementComponent->MaxSpeed = 400.f;
 	
-	bCanAffectNavigationGeneration = false;
+	bCanAffectNavigationGeneration = true;
 }
 
 void AMinion::Tick(float DeltaSeconds)
@@ -51,6 +51,12 @@ void AMinion::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	RotateToMovement();
+	KeepGrounded();
+
+	FRotator NewRotation = GetActorRotation();
+	NewRotation.Pitch = 0.f;
+	NewRotation.Roll = 0.f;
+	SetActorRotation(NewRotation);
 }
 
 void AMinion::RotateToMovement()
@@ -66,5 +72,23 @@ void AMinion::RotateToMovement()
 	const FRotator TargetRotation = Velocity.Rotation();
 	const FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation, GetWorld()->GetDeltaSeconds(), 5.f);
 	SetActorRotation(NewRotation);
+}
+
+void AMinion::KeepGrounded()
+{
+	const FVector Start = GetActorLocation();
+	const FVector End = Start - FVector(0.0f, 0.0f, 1000.0f); 
+
+	FHitResult HitResult;
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility, CollisionParams))
+	{
+		// Move the pawn's Z position to match the ground
+		FVector NewLocation = GetActorLocation();
+		NewLocation.Z = HitResult.Location.Z + CapsuleComponent->GetScaledCapsuleHalfHeight();
+		SetActorLocation(NewLocation);
+	}
 }
 

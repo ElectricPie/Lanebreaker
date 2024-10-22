@@ -29,5 +29,8 @@ private:
 	void MoveToNextWaypoint();
 	
 private:
+	float WaypointAcceptanceRadius = 20.f;
+	
 	TQueue<AActor*> Waypoints;
+	TWeakObjectPtr<AActor> CurrentTarget;
 };

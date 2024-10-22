@@ -24,6 +24,7 @@ public:
 
 private:
 	void RotateToMovement();
+	void KeepGrounded();
 	
 private:
 	UPROPERTY(VisibleAnywhere)

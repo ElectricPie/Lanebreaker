@@ -27,10 +27,12 @@ void AMinionController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollo
 {
 	Super::OnMoveCompleted(RequestID, Result);
 
-	if (Result.IsSuccess())
+	const float DistanceToTarget = (GetPawn()->GetActorLocation() - CurrentTarget->GetActorLocation()).Length();
+	if (Result.IsSuccess() || DistanceToTarget < WaypointAcceptanceRadius)
 	{
 		MoveToNextWaypoint();
 	}
+	
 }
 
 void AMinionController::MoveToNextWaypoint()
@@ -40,12 +42,14 @@ void AMinionController::MoveToNextWaypoint()
 		UE_LOG(LogTemp, Warning, TEXT("No Waypoints left"));
 		return;
 	}
-	
+
 	AActor* Target;
 	Waypoints.Dequeue(Target);
+	CurrentTarget = Target;
 
 	FAIMoveRequest MoveRequest;
 	MoveRequest.SetGoalActor(Target);
+	MoveRequest.SetAcceptanceRadius(WaypointAcceptanceRadius);
 	
 	MoveTo(MoveRequest);
 }
