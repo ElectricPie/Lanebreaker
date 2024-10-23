@@ -7,6 +7,7 @@
 #include "Components/ArrowComponent.h"
 #endif // WITH_EDITORONLY_DATA
 #include "Components/CapsuleComponent.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 
 // Sets default values
@@ -42,6 +43,10 @@ AMinion::AMinion()
 
 	FloatingPawnMovementComponent = CreateDefaultSubobject<UFloatingPawnMovement>(TEXT("Floating Pawn Movement"));
 	FloatingPawnMovementComponent->MaxSpeed = 400.f;
+
+	AggroRadiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Aggro Radius"));
+	AggroRadiusSphere->SetSphereRadius(500.f);
+	AggroRadiusSphere->SetupAttachment(CapsuleComponent);
 	
 	bCanAffectNavigationGeneration = true;
 }
@@ -91,4 +96,3 @@ void AMinion::KeepGrounded()
 		SetActorLocation(NewLocation);
 	}
 }
-

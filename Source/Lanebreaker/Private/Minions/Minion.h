@@ -7,10 +7,11 @@
 #include "Minion.generated.h"
 
 
-class UFloatingPawnMovement;
 class UArrowComponent;
 class UCapsuleComponent;
+class UFloatingPawnMovement;
 class USkeletalMeshComponent;
+class USphereComponent;
 
 UCLASS()
 class AMinion : public APawn
@@ -22,10 +23,12 @@ public:
 	AMinion();
 	virtual void Tick(float DeltaSeconds) override;
 
+	USphereComponent* GetAggroRadiusSphere() { return AggroRadiusSphere; }
+
 private:
 	void RotateToMovement();
 	void KeepGrounded();
-	
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCapsuleComponent> CapsuleComponent;
@@ -37,4 +40,6 @@ private:
 	TObjectPtr<USkeletalMeshComponent> MeshComponent;
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UFloatingPawnMovement> FloatingPawnMovementComponent;
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USphereComponent> AggroRadiusSphere;
 };

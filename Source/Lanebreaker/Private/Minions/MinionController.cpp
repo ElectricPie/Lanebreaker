@@ -3,6 +3,8 @@
 
 #include "MInions/MinionController.h"
 
+#include "Minion.h"
+#include "Components/SphereComponent.h"
 #include "Navigation/PathFollowingComponent.h"
 
 void AMinionController::SetWaypoints(const TArray<AActor*> NewWaypoints)
@@ -23,6 +25,20 @@ void AMinionController::SetWaypoints(const TArray<AActor*> NewWaypoints)
 	MoveToNextWaypoint();
 }
 
+void AMinionController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	if (!HasAuthority())
+		return;
+
+	if (AMinion* Minion = Cast<AMinion>(GetPawn()))
+	{
+		Minion->GetAggroRadiusSphere()->OnComponentBeginOverlap.AddDynamic(this, &AMinionController::OnMinionAggroRadiusBegin);
+		Minion->GetAggroRadiusSphere()->OnComponentEndOverlap.AddDynamic(this, &AMinionController::OnMinionAggroRadiusEnd);
+	}
+}
+
 void AMinionController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
 {
 	Super::OnMoveCompleted(RequestID, Result);
@@ -40,6 +56,7 @@ void AMinionController::MoveToNextWaypoint()
 	if (Waypoints.IsEmpty())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No Waypoints left"));
+		CurrentTarget = nullptr;
 		return;
 	}
 
@@ -52,4 +69,29 @@ void AMinionController::MoveToNextWaypoint()
 	MoveRequest.SetAcceptanceRadius(WaypointAcceptanceRadius);
 	
 	MoveTo(MoveRequest);
+}
+
+void AMinionController::OnMinionAggroRadiusBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor == GetPawn())
+		return;
+
+	if (AMinion* Minion = Cast<AMinion>(OtherActor))
+	{
+		if (const AMinionController* MinionController = Cast<AMinionController>(Minion->GetController()))
+		{
+			// Check if on enemy team (Team 0 is no team so all are enemy)
+			if (Team == 0 || MinionController->Team != Team)
+			{
+				EnemiesInRange.Add(Minion);
+			}
+		}
+	}
+}
+
+void AMinionController::OnMinionAggroRadiusEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	EnemiesInRange.Remove(OtherActor);
 }
