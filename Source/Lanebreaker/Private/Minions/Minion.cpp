@@ -6,8 +6,10 @@
 #if WITH_EDITORONLY_DATA
 #include "Components/ArrowComponent.h"
 #endif // WITH_EDITORONLY_DATA
+#include "AbilitySystemComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SphereComponent.h"
+#include "Attributes/StandardAttributeSet.h"
 #include "GameFramework/FloatingPawnMovement.h"
 
 // Sets default values
@@ -47,6 +49,8 @@ AMinion::AMinion()
 	AggroRadiusSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Aggro Radius"));
 	AggroRadiusSphere->SetSphereRadius(500.f);
 	AggroRadiusSphere->SetupAttachment(CapsuleComponent);
+
+	AbilitySystemComponent = CreateDefaultSubobject<UAbilitySystemComponent>(TEXT("Ability System Component"));
 	
 	bCanAffectNavigationGeneration = true;
 }
@@ -62,6 +66,23 @@ void AMinion::Tick(float DeltaSeconds)
 	NewRotation.Pitch = 0.f;
 	NewRotation.Roll = 0.f;
 	SetActorRotation(NewRotation);
+}
+
+const UStandardAttributeSet* AMinion::GetStandardAttributeSet()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Boop 2"));
+	return StandardAttributeSet;
+}
+
+void AMinion::BeginPlay()
+{
+	if (AbilitySystemComponent)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Boop"));
+		StandardAttributeSet = AbilitySystemComponent->GetSet<UStandardAttributeSet>();
+	}
+	
+	Super::BeginPlay();
 }
 
 void AMinion::RotateToMovement()

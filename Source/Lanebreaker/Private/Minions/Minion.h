@@ -4,9 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "AbilitySystemInterface.h"
 #include "Minion.generated.h"
 
 
+class UStandardAttributeSet;
+class UAbilitySystemComponent;
 class UArrowComponent;
 class UCapsuleComponent;
 class UFloatingPawnMovement;
@@ -14,7 +17,7 @@ class USkeletalMeshComponent;
 class USphereComponent;
 
 UCLASS()
-class AMinion : public APawn
+class AMinion : public APawn, public IAbilitySystemInterface
 {
 	GENERATED_BODY()
 
@@ -25,6 +28,13 @@ public:
 
 	USphereComponent* GetAggroRadiusSphere() { return AggroRadiusSphere; }
 
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override { return AbilitySystemComponent; };
+	UFUNCTION(BlueprintPure, Category="GAS")
+	const UStandardAttributeSet* GetStandardAttributeSet();
+	
+protected:
+	virtual void BeginPlay() override;
+	
 private:
 	void RotateToMovement();
 	void KeepGrounded();
@@ -42,4 +52,9 @@ private:
 	TObjectPtr<UFloatingPawnMovement> FloatingPawnMovementComponent;
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> AggroRadiusSphere;
+	
+	UPROPERTY(EditAnywhere, Category="GAS")
+	TObjectPtr<UAbilitySystemComponent> AbilitySystemComponent;
+	UPROPERTY(EditAnywhere, Category="GAS")
+	TObjectPtr<const UStandardAttributeSet> StandardAttributeSet;
 };
