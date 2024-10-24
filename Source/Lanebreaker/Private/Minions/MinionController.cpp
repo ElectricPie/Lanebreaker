@@ -43,6 +43,19 @@ void AMinionController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollo
 {
 	Super::OnMoveCompleted(RequestID, Result);
 
+	// TODO: Handle reaching enemy
+	if (CurrentTarget.IsValid())
+	{
+		return;
+	}
+
+	// Handle enemy dead
+	if (EnemiesInRange.Num() > 0)
+	{
+		return;
+	}
+	
+	// Handles waypoints
 	const float DistanceToTarget = (GetPawn()->GetActorLocation() - CurrentTarget->GetActorLocation()).Length();
 	if (Result.IsSuccess() || DistanceToTarget < WaypointAcceptanceRadius)
 	{
@@ -59,15 +72,12 @@ void AMinionController::MoveToNextWaypoint()
 		CurrentTarget = nullptr;
 		return;
 	}
-
-	AActor* Target;
-	Waypoints.Dequeue(Target);
-	CurrentTarget = Target;
+	
+	Waypoints.Dequeue(CurrentWaypoint);
 
 	FAIMoveRequest MoveRequest;
-	MoveRequest.SetGoalActor(Target);
+	MoveRequest.SetGoalActor(CurrentWaypoint.Get());
 	MoveRequest.SetAcceptanceRadius(WaypointAcceptanceRadius);
-	
 	MoveTo(MoveRequest);
 }
 
@@ -85,6 +95,16 @@ void AMinionController::OnMinionAggroRadiusBegin(UPrimitiveComponent* Overlapped
 			if (Team == 0 || MinionController->Team != Team)
 			{
 				EnemiesInRange.Add(Minion);
+
+				if (CurrentTarget == nullptr)
+				{
+					CurrentTarget = Minion;
+
+					FAIMoveRequest MoveRequest;
+					MoveRequest.SetGoalActor(CurrentTarget.Get());
+					MoveRequest.SetAcceptanceRadius(WaypointAcceptanceRadius);
+					MoveTo(MoveRequest);
+				}
 			}
 		}
 	}
@@ -94,4 +114,15 @@ void AMinionController::OnMinionAggroRadiusEnd(UPrimitiveComponent* OverlappedCo
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	EnemiesInRange.Remove(OtherActor);
+
+	// Continue to waypoints once all enemies are dead
+	if (EnemiesInRange.Num() == 0 && CurrentWaypoint.IsValid())
+	{
+		CurrentTarget = nullptr;
+		
+		FAIMoveRequest MoveRequest;
+		MoveRequest.SetGoalActor(CurrentWaypoint.Get());
+		MoveRequest.SetAcceptanceRadius(WaypointAcceptanceRadius);
+		MoveTo(MoveRequest);
+	}
 }

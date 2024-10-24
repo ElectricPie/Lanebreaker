@@ -42,8 +42,9 @@ private:
 private:
 	float WaypointAcceptanceRadius = 20.f;
 
-	TQueue<AActor*> Waypoints;
-	TWeakObjectPtr<AActor> CurrentTarget;
+	TQueue<TWeakObjectPtr<AActor>> Waypoints;
+	TWeakObjectPtr<AActor> CurrentWaypoint;
 	UPROPERTY(VisibleAnywhere)
 	TSet<TWeakObjectPtr<AActor>> EnemiesInRange;
+	TWeakObjectPtr<AActor> CurrentTarget;
 };
